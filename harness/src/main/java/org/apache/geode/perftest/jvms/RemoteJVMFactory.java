@@ -118,7 +118,7 @@ public class RemoteJVMFactory {
 
     classPathCopier.copyToNodes(infra, node -> getLibDir(mapping, node));
     File keyStore = createKeystore();
-    infra.copyToNodes(Arrays.asList(keyStore), node -> getOutputDir(mapping, node), true);
+    infra.copyToNodes(Arrays.asList(keyStore), node -> getLibDir(mapping, node), false);
 
     CompletableFuture<Void> processesExited = jvmLauncher.launchProcesses(infra, RMI_PORT, mapping);
 
@@ -153,7 +153,7 @@ public class RemoteJVMFactory {
     CertAndKeyGen keyGen = new CertAndKeyGen("RSA","SHA1WithRSA",null);
     keyGen.generate(1024);
 
-    char[] password = "some password".toCharArray();
+    char[] password = "123456".toCharArray();
     PrivateKey privateKey = keyGen.getPrivateKey();
 
     //Generate self signed certificate
@@ -163,7 +163,7 @@ public class RemoteJVMFactory {
     logger.info("Certificate : {}", chain[0]);
 
     KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-
+    ks.load(null, null);
     ks.setKeyEntry("default", privateKey, password, chain);
 
     File jksFile = new File("selfsigned.jks");
