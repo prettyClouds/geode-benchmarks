@@ -51,10 +51,6 @@ dependencies {
     testCompile(group: 'org.assertj', name: 'assertj-core', version: project.'assertj-core.version')
 }
 
-compileJava {
-    options.compilerArgs << '-XDignore.symbol.file'
-}
-
 test{
     useJUnitPlatform()
 }
@@ -70,6 +66,7 @@ task benchmark(type: Test) {
     testLogging {
         exceptionFormat = 'full'
     }
+
     exclude "**/Replicated*QueryBenchmark.class"
     exclude "**/ReplicatedFunctionExecution*Benchmark.class"
     exclude "**/PartitionedNonIndexedQueryBenchmark.class"

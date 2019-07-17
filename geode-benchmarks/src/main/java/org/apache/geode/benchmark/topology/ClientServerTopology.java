@@ -62,18 +62,18 @@ public class ClientServerTopology {
     testConfig.jvmArgs(LOCATOR, appendIfNotEmpty(JVM_ARGS, profilerArgument));
     testConfig.jvmArgs(SERVER, appendIfNotEmpty(JVM_ARGS, profilerArgument));
 
+    if (System.getProperty("java.runtime.version").startsWith("1.8")) {
+      testConfig.jvmArgs(CLIENT, JVM8_ARGS);
+      testConfig.jvmArgs(LOCATOR, JVM8_ARGS);
+      testConfig.jvmArgs(SERVER, JVM8_ARGS);
+    }
+
     String withSslArg = System.getProperty("withSsl");
     if (withSslArg != null && withSslArg.equals("true")) {
       logger.info("Configuring JVMs to run with SSL enabled");
       testConfig.jvmArgs(CLIENT, Arrays.append(JVM_ARGS, WITH_SSL_ARGUMENT));
       testConfig.jvmArgs(LOCATOR, Arrays.append(JVM_ARGS, WITH_SSL_ARGUMENT));
       testConfig.jvmArgs(SERVER, Arrays.append(JVM_ARGS, WITH_SSL_ARGUMENT));
-    }
-
-    if (System.getProperty("java.runtime.version").startsWith("1.8")) {
-      testConfig.jvmArgs(CLIENT, JVM8_ARGS);
-      testConfig.jvmArgs(LOCATOR, JVM8_ARGS);
-      testConfig.jvmArgs(SERVER, JVM8_ARGS);
     }
 
     testConfig.before(new StartLocator(LOCATOR_PORT), LOCATOR);

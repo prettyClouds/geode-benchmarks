@@ -150,6 +150,7 @@ public class SshInfrastructure implements Infrastructure {
           try (Session session = client.startSession()) {
             session.exec(String.format("mkdir -p '%s'", destDir)).join();
           }
+
           for (File file : files) {
             logger.info("Copying " + file + " to " + address);
             client.newSCPFileTransfer().upload(new FileSystemFile(file), destDir);
