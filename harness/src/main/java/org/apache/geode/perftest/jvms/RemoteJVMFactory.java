@@ -20,7 +20,6 @@ package org.apache.geode.perftest.jvms;
 import static java.util.concurrent.TimeUnit.DAYS;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -31,6 +30,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,8 +40,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-
-import java.security.cert.X509Certificate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,13 +148,13 @@ public class RemoteJVMFactory {
       throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException,
       NoSuchProviderException, InvalidKeyException, SignatureException {
 
-    CertAndKeyGen keyGen = new CertAndKeyGen("RSA","SHA1WithRSA",null);
+    CertAndKeyGen keyGen = new CertAndKeyGen("RSA", "SHA1WithRSA", null);
     keyGen.generate(1024);
 
     char[] password = "123456".toCharArray();
     PrivateKey privateKey = keyGen.getPrivateKey();
 
-    //Generate self signed certificate
+    // Generate self signed certificate
     X509Certificate[] chain = new X509Certificate[1];
     chain[0] = keyGen.getSelfCertificate(new X500Name("CN=ROOT"), DAYS.toSeconds(365));
 
