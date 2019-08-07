@@ -130,6 +130,7 @@ fi
 
 fixRepoName() {
   if [ -z "$1" ]; then
+    echo "no repo specified"
     return 1
   elif [ ${1:0:5} = "https" ]; then
     echo ${1}
@@ -155,10 +156,8 @@ if [[ -z "${VERSION}" ]]; then
     exit 1
   fi
 
-  ssh ${SSH_OPTIONS} geode@$FIRST_INSTANCE "\
-    rm -rf geode && \
-    git clone ${REPO} && \
-    cd geode && git checkout ${BRANCH}"
+
+./gradlew checkoutGeodeBranch -PmachineName=${FIRST_INSTANCE} -Prepo=${REPO} -Pbranch=${BRANCH} -Ptag=${TAG}
 
   set +e
   for i in {1..5}; do
@@ -215,7 +214,7 @@ METADATA="${METADATA},'source_repo':'${GEODE_REPO}','benchmark_repo':'${BENCHMAR
 
 ssh ${SSH_OPTIONS} geode@${FIRST_INSTANCE} \
   cd geode-benchmarks '&&' \
-  ./gradlew -PgeodeVersion=${VERSION} benchmark "-Phosts=${HOSTS}" "-Pmetadata=${METADATA}" "$@"
+  ./gradlew benchmark -PgeodeVersion=${VERSION} "-Phosts=${HOSTS}" "-Pmetadata=${METADATA}" "$@"
 
 mkdir -p ${OUTPUT}
 
