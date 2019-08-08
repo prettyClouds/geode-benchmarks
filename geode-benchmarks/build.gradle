@@ -56,50 +56,6 @@ test {
     useJUnitPlatform()
 }
 
-task runTests {
-    checkoutGeodeBranch()
-}
-
-def checkoutGeodeBranch()
-{
-    def repoUrl = 'https://github.com/apache/geode'
-    if (project.hasProperty('repo')) {
-        repoUrl = project.findProperty('repo')
-        if (!repoUrl.startsWith('https:')) {
-            repoUrl = 'https://github.com/' + repoUrl
-        }
-    }
-
-    def branch = 'develop'
-    if (project.hasProperty("branch")) {
-        branch = project.findProperty("branch")
-    }
-
-
-    if (!project.hasProperty("tag")) {
-        throw new IllegalArgumentException("no tag provided")
-    }
-    def tag = project.findProperty("tag")
-
-    def machineName = project.findProperty("machineName")
-
-    remotes.create('locator') {
-        host = machineName
-        user = 'geode'
-        identity = file("${System.properties['user.home']}/.geode-benchmarks/${tag}-privkey.pem")
-        knownHosts = allowAnyHosts
-    }
-
-    ssh.run {
-        session(remotes['locator']) {
-            execute 'rm -rf geode'
-            execute 'git clone ' + repoUrl
-            execute 'cd geode && git checkout ' + branch
-        }
-    }
-}
-
-
 task benchmark(type: Test) {
     if (project.hasProperty('testJVM') && !testJVM.trim().isEmpty()) {
         executable = "${testJVM}/bin/java"
@@ -132,3 +88,5 @@ task benchmark(type: Test) {
         }
     }
 }
+
+apply plugin:org.apache.geode.plugins.RunTestsPlugin

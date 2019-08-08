@@ -1,0 +1,8 @@
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.hidetake', name: 'groovy-ssh', version: '2.3.0'
+}
