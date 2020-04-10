@@ -39,17 +39,27 @@ public class SharedContext implements Serializable {
     this.jvmMappings = jvmMappings;
   }
 
-  public Set<InetAddress> getHostsForRole(String role) {
+  public List<InetAddress> getHostsForRole(String role) {
     return jvmMappings.stream()
         .filter(mapping -> mapping.getRole().equals(role))
         .map(mapping -> mapping.getNode().getAddress())
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 
-  public Set<Integer> getHostIDsForRole(String role) {
+  public List<Integer> getHostIDsForRole(String role) {
     return jvmMappings.stream()
         .filter(mapping -> mapping.getRole().equals(role))
         .map(mapping -> mapping.getId())
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
+  }
+
+  public String getHostById(int id) {
+    return jvmMappings.stream()
+        .filter((jvm) -> jvm.getId() == id)
+        .findFirst()
+        .get()
+        .getNode()
+        .getAddress()
+        .getHostName();
   }
 }

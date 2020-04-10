@@ -19,7 +19,7 @@ package org.apache.geode.perftest.runner;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.util.Set;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.geode.perftest.TestContext;
@@ -44,13 +44,18 @@ public class DefaultTestContext implements TestContext {
   }
 
   @Override
-  public Set<InetAddress> getHostsForRole(String role) {
+  public List<InetAddress> getHostsForRole(String role) {
     return sharedContext.getHostsForRole(role);
   }
 
   @Override
-  public Set<Integer> getHostsIDsForRole(String role) {
+  public List<Integer> getHostsIDsForRole(String role) {
     return sharedContext.getHostIDsForRole(role);
+  }
+
+  @Override
+  public String getHostName() {
+    return sharedContext.getHostById(getJvmID());
   }
 
   @Override

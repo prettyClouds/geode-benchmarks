@@ -48,10 +48,19 @@ public class StartClient implements Task {
     InetAddress locator = context.getHostsForRole("locator").iterator().next();
 
     List<String> servers =
-        context.getHostsForRole("server").stream().map((addr) -> addr.getHostName()).collect(
+        context.getHostsForRole("server").stream()
+            .map((addr) -> addr.getHostAddress())
+            .collect(
             Collectors.toList());
 
-    System.setProperty("geode-servers", String.join(",", servers));
+    System.setProperty("geode-servers-name", String.join(",", servers));
+
+    List<String> ids =
+        context.getHostsIDsForRole("server").stream()
+            .map((i) -> "" + i)
+            .collect(Collectors.toList());
+
+    System.setProperty("geode-servers-id", String.join(",", ids));
 
     String statsFile = new File(context.getOutputDir(), "stats.gfs").getAbsolutePath();
     Properties properties = clientProperties();

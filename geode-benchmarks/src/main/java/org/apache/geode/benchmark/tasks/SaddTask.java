@@ -18,6 +18,7 @@
 package org.apache.geode.benchmark.tasks;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Map;
 import java.util.Random;
 
@@ -27,8 +28,14 @@ import redis.clients.jedis.Jedis;
 
 public class SaddTask extends BenchmarkDriverAdapter implements Serializable {
 
+  @Override
+  public void tearDown() {
+    jedis.close();
+  }
+
   private final int numSets;
   private final int numElementsPerSet;
+
   private Jedis jedis;
 
   public SaddTask(int numSets, int numElementsPerSet) {
@@ -40,16 +47,41 @@ public class SaddTask extends BenchmarkDriverAdapter implements Serializable {
   @Override
   public void setUp(BenchmarkConfiguration cfg) throws Exception {
     super.setUp(cfg);
-    String property = System.getProperty("geode-servers");
-    String[] servers = property.split(",");
-    String randomServer = servers[new Random().nextInt(servers.length)];
-//    jedis = new Jedis(randomServer, 6378 + Integer.valueOf(System.getProperty("JVM_ID")));
+    establishRedisConnection();
+  }
+
+  private void establishRedisConnection() {
+    String redisUri = "redis://" + getServerNameAndPort();
+    jedis = new Jedis(URI.create(redisUri));
   }
 
   @Override
   public boolean test(Map<Object, Object> ctx) {
-//    jedis.sadd("setName_" + new Random().nextInt(numSets),
-//        "element_" + new Random().nextInt(numElementsPerSet));
+    boolean operationSuccessful = false;
+    while (!operationSuccessful) {
+
+      try {
+        String set_key = "setName_" + new Random().nextInt(numSets);
+        String element = "element_" + new Random().nextInt(numElementsPerSet);
+        jedis.sadd(set_key, element);
+        operationSuccessful = true;
+      } catch (Exception e) {
+        establishRedisConnection();
+      }
+    }
     return true;
   }
+
+  private String getServerNameAndPort() {
+    String serverProperty = System.getProperty("geode-servers-name");
+    String[] servers = serverProperty.split(",");
+    String portsProperty = System.getProperty("geode-servers-id");
+    String[] ports = portsProperty.split(",");
+
+    int randomServerIndex = new Random().nextInt(servers.length);
+    int port = 6379 + Integer.valueOf(ports[randomServerIndex]);
+    return servers[randomServerIndex] + ":" + port;
+  }
+
+
 }
