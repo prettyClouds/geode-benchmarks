@@ -21,7 +21,9 @@ import static org.apache.geode.benchmark.parameters.GeodeProperties.clientProper
 
 import java.io.File;
 import java.net.InetAddress;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.geode.cache.client.ClientCache;
 import org.apache.geode.cache.client.ClientCacheFactory;
@@ -44,6 +46,12 @@ public class StartClient implements Task {
   public void run(TestContext context) throws Exception {
 
     InetAddress locator = context.getHostsForRole("locator").iterator().next();
+
+    List<String> servers =
+        context.getHostsForRole("server").stream().map((addr) -> addr.getHostName()).collect(
+            Collectors.toList());
+
+    System.setProperty("geode-servers", String.join(",", servers));
 
     String statsFile = new File(context.getOutputDir(), "stats.gfs").getAbsolutePath();
     Properties properties = clientProperties();

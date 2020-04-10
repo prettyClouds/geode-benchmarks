@@ -27,5 +27,6 @@ public interface Utils {
     testConfig.jvmArgs(LOCATOR, args);
     testConfig.jvmArgs(SERVER, args);
     testConfig.jvmArgs(CLIENT, args);
+
   }
 }

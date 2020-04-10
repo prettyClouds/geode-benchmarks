@@ -55,6 +55,8 @@ public class StartServer implements Task {
         .set(ConfigurationProperties.NAME,
             "server-" + context.getJvmID() + "-" + InetAddress.getLocalHost())
         .set(ConfigurationProperties.STATISTIC_ARCHIVE_FILE, statsFile)
+        .set(ConfigurationProperties.REDIS_PORT, "" + (6379 + context.getJvmID()))
+        .set(ConfigurationProperties.REDIS_BIND_ADDRESS, "localhost")
         .create();
     CacheServer cacheServer = cache.addCacheServer();
     cacheServer.setPort(0);

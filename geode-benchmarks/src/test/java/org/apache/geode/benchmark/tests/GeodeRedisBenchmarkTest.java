@@ -15,18 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.geode.perftest;
+package org.apache.geode.benchmark.tests;
 
-import java.util.List;
 
-/**
- * Runner that executes a {@link PerformanceTest}A
- *
- * Runners can be obtained from the {@link TestRunners} static
- * factory methods. Eg
- */
-public interface TestRunner {
-  void runTest(PerformanceTest test) throws Exception;
 
-  List<String> getHosts();
+import java.io.File;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+
+import org.apache.geode.perftest.TestRunners;
+
+@ExtendWith(TempDirectory.class)
+public class GeodeRedisBenchmarkTest {
+
+  private File folder;
+
+  @BeforeEach
+  void createTemporaryFolder(@TempDirectory.TempDir Path tempFolder) {
+    folder = tempFolder.toFile();
+  }
+
+  @Test
+  public void benchmarkRunsSuccessfully()
+      throws Exception {
+    GeodeRedisBenchmark test = new GeodeRedisBenchmark();
+    TestRunners.minimalRunner(folder)
+        .runTest(test);
+  }
 }

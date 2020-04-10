@@ -37,7 +37,6 @@ import org.apache.geode.perftest.runner.DefaultTestRunner;
  *
  */
 public class TestRunners {
-
   public static final String TEST_HOSTS = "TEST_HOSTS";
   public static final String OUTPUT_DIR = "OUTPUT_DIR";
 
@@ -69,6 +68,7 @@ public class TestRunners {
       "-Xms4g"
 
   };
+  private static String testHosts;
 
   public static TestRunner defaultRunner(String username, File outputDir, String... hosts) {
     return new DefaultTestRunner(
@@ -82,7 +82,7 @@ public class TestRunners {
    *
    */
   public static TestRunner defaultRunner() {
-    String testHosts = System.getProperty(TEST_HOSTS);
+    testHosts = System.getProperty(TEST_HOSTS);
     String outputDir = System.getProperty(OUTPUT_DIR, "output");
 
     return defaultRunner(testHosts, new File(outputDir));

@@ -67,6 +67,11 @@ public class DefaultTestRunner implements TestRunner {
     runTest(config, testName);
   }
 
+  @Override
+  public List<String> getHosts() {
+    return null;
+  }
+
   protected void runTest(TestConfig config, String testName)
       throws Exception {
     int nodes = config.getTotalJVMs();
