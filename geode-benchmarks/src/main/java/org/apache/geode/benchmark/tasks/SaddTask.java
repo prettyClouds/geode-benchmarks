@@ -43,13 +43,13 @@ public class SaddTask extends BenchmarkDriverAdapter implements Serializable {
     String property = System.getProperty("geode-servers");
     String[] servers = property.split(",");
     String randomServer = servers[new Random().nextInt(servers.length)];
-    jedis = new Jedis(randomServer, 6378 + Integer.valueOf(System.getProperty("JVM_ID")));
+//    jedis = new Jedis(randomServer, 6378 + Integer.valueOf(System.getProperty("JVM_ID")));
   }
 
   @Override
   public boolean test(Map<Object, Object> ctx) {
-    jedis.sadd("setName_" + new Random().nextInt(numSets),
-        "element_" + new Random().nextInt(numElementsPerSet));
+//    jedis.sadd("setName_" + new Random().nextInt(numSets),
+//        "element_" + new Random().nextInt(numElementsPerSet));
     return true;
   }
 }
